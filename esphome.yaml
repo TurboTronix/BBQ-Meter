@@ -2,7 +2,18 @@ esphome:
   name: 'bbq-control'
   platform: ESP32
   board: esp32dev
-
+  on_boot:
+    - script.execute: blue_led_on_off
+    - switch.turn_off: bbq_green
+    - switch.turn_off: bbq_red
+    - switch.turn_off: probe1_green
+    - switch.turn_off: probe1_red
+    - switch.turn_off: probe2_green
+    - switch.turn_off: probe2_red
+    - switch.turn_off: probe3_green
+    - switch.turn_off: probe3_red
+    - switch.turn_off: probe4_green
+    - switch.turn_off: probe4_red
 
 # Enable logging
 logger:
@@ -1446,3 +1457,41 @@ display:
              it.print(20, 0, id(font_14), "Set Probe 4");
           } 
           it.printf(20, 25, id(font_24), "%.1f C", (floor(id(rotary).state / 100.0) * 100) + ((id(rotary).state - (floor(id(rotary).state / 100.0) * 100)) * 5));
+script:
+  - id: blue_led_on_off
+    then:
+      - if:
+          condition:
+             lambda: 'return id(probe1_plugged).state;'
+          then:
+            - switch.turn_on: probe1_blue
+          else:
+            - switch.turn_off: probe1_blue
+      - if:
+          condition:
+             lambda: 'return id(probe2_plugged).state;'
+          then:
+            - switch.turn_on: probe2_blue
+          else:
+            - switch.turn_off: probe2_blue
+      - if:
+          condition:
+             lambda: 'return id(probe3_plugged).state;'
+          then:
+            - switch.turn_on: probe3_blue
+          else:
+            - switch.turn_off: probe3_blue
+      - if:
+          condition:
+             lambda: 'return id(probe4_plugged).state;'
+          then:
+            - switch.turn_on: probe4_blue
+          else:
+            - switch.turn_off: probe4_blue
+      - if:
+          condition:
+             lambda: 'return id(bbq_plugged).state;'
+          then:
+            - switch.turn_on: bbq_blue
+          else:
+            - switch.turn_off: bbq_blue
